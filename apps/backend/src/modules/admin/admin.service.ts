@@ -52,7 +52,7 @@ export class AdminService {
           title: true,
           slug: true,
           status: true,
-          excerpt: true,
+          content: true,
           createdAt: true,
           updatedAt: true,
           user: { select: { id: true, name: true, email: true } },

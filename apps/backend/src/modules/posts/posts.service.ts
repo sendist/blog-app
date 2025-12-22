@@ -67,7 +67,7 @@ export class PostsService {
         skip,
         take: q.limit,
         select: {
-          id: true, title: true, slug: true, status: true, excerpt: true,
+          id: true, title: true, slug: true, status: true, content: true,
           createdAt: true, updatedAt: true,
         },
       }),
