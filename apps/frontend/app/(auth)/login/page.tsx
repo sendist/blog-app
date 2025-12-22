@@ -47,10 +47,10 @@ export default function LoginPage() {
     mutationFn: async (data: LoginFormValues) => {
       return api.post("/auth/login", data);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       // Refresh the user state so the app knows we are logged in
-      queryClient.invalidateQueries({ queryKey: ["auth-user"] });
-      
+      await queryClient.resetQueries({ queryKey: ["auth-user"] });
+
       toast("Logged in successfully.");
       router.push("/dashboard");
     },
