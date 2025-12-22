@@ -36,7 +36,7 @@ export class PostsService {
     return this.prisma.post.create({
       data,
       select: {
-        id: true, title: true, slug: true, status: true, excerpt: true,
+        id: true, title: true, slug: true, status: true,
         createdAt: true, updatedAt: true,
       },
     });
@@ -55,7 +55,6 @@ export class PostsService {
       where.OR = [
         { title: { contains: q.q, mode: 'insensitive' } },
         { content: { contains: q.q, mode: 'insensitive' } },
-        { excerpt: { contains: q.q, mode: 'insensitive' } },
       ];
     }
 
@@ -91,8 +90,7 @@ export class PostsService {
       },
       select: {
         id: true, userId: true, title: true, slug: true, content: true,
-        excerpt: true, status: true,
-        createdAt: true, updatedAt: true,
+        status: true, createdAt: true, updatedAt: true,
       },
     });
 
@@ -128,7 +126,7 @@ export class PostsService {
       where: { id: existing.id },
       data,
       select: {
-        id: true, title: true, slug: true, content: true, excerpt: true, status: true,
+        id: true, title: true, slug: true, content: true, status: true,
         createdAt: true, updatedAt: true,
       },
     });
@@ -164,7 +162,6 @@ export class PostsService {
       where.OR = [
         { title: { contains: q.q, mode: 'insensitive' } },
         { content: { contains: q.q, mode: 'insensitive' } },
-        { excerpt: { contains: q.q, mode: 'insensitive' } },
       ];
     }
 
@@ -179,7 +176,7 @@ export class PostsService {
           id: true,
           title: true,
           slug: true,
-          excerpt: true,
+          content: true,
           status: true,
           createdAt: true,
           updatedAt: true,
@@ -202,7 +199,6 @@ export class PostsService {
         title: true,
         slug: true,
         content: true,
-        excerpt: true,
         status: true,
         createdAt: true,
         updatedAt: true,

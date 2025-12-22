@@ -34,7 +34,6 @@ export class AdminService {
       where.OR = [
         { title: { contains: q.q, mode: 'insensitive' } },
         { content: { contains: q.q, mode: 'insensitive' } },
-        { excerpt: { contains: q.q, mode: 'insensitive' } },
         { user: { is: { name: { contains: q.q, mode: 'insensitive' } } } },
         { user: { is: { email: { contains: q.q, mode: 'insensitive' } } } },
       ];
