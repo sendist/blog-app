@@ -7,7 +7,7 @@ import {
   LayoutDashboard, 
   FileText, 
   Users, 
-  Settings, 
+  Newspaper, 
   LogOut, 
   PlusCircle,
   List
@@ -68,10 +68,10 @@ export function Sidebar() {
       roles: ["ADMIN"],
     },
     {
-      title: "Settings",
-      href: "/settings",
-      icon: Settings,
-      roles: ["USER", "ADMIN"],
+      title: "feed",
+      href: "/feed",
+      icon: Newspaper,
+      roles: ["USER"],
     },
   ];
 
