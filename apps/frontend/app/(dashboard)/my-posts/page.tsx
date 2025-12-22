@@ -48,7 +48,7 @@ interface PaginatedResponse {
 export default function MyPostsPage() {
   const queryClient = useQueryClient();
 
-  // 1. Fetch User's Posts
+  // Fetch User's Posts
   const { data: posts, isLoading, isError } = useQuery({
     queryKey: ["my-posts"],
     queryFn: async () => {
@@ -57,7 +57,7 @@ export default function MyPostsPage() {
     },
   });
 
-  // 2. Delete Post Mutation
+  // Delete Post Mutation
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       return api.delete(`/posts/${id}`);
@@ -165,8 +165,6 @@ export default function MyPostsPage() {
 
               <CardFooter className="pt-0 flex justify-between items-center">
                 {getStatusBadge(post.status)}
-                
-                {/* Optional: Add a 'Read more' link if needed, or keep it clean */}
               </CardFooter>
             </Card>
           ))
