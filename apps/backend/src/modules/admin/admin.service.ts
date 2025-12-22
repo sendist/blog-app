@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { PostStatus } from '@prisma/client';
 import { AdminListPostsQuery } from './dto/admin-list-posts.query';
@@ -81,5 +81,24 @@ export class AdminService {
         user: { select: { id: true, name: true, email: true } },
       },
     });
+  }
+
+  async deleteUser(adminId: string, targetUserId: string) {
+    if (adminId === targetUserId) {
+      throw new BadRequestException('You cannot delete your own account');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: targetUserId },
+      select: { id: true, email: true, role: true },
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    await this.prisma.user.delete({
+      where: { id: targetUserId },
+    });
+
+    return { ok: true };
   }
 }
