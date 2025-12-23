@@ -5,6 +5,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { PostsModule } from './modules/posts/post.module';
 import { UsersModule } from './modules/users/users.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { SupabaseModule } from './common/supabase/supabase.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { AdminModule } from './modules/admin/admin.module';
     PostsModule,
     UsersModule,
     AdminModule,
+    SupabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

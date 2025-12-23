@@ -180,7 +180,7 @@ export class PostsService {
           status: true,
           createdAt: true,
           updatedAt: true,
-          user: { select: { id: true, name: true } }, // show author
+          user: { select: { id: true, name: true, imageUrl: true} }, // show author
         },
       }),
     ]);
@@ -202,7 +202,7 @@ export class PostsService {
         status: true,
         createdAt: true,
         updatedAt: true,
-        user: { select: { id: true, name: true } },
+        user: { select: { id: true, name: true, imageUrl: true} },
       },
     });
 

@@ -5,6 +5,7 @@ export type CurrentUserPayload = {
   email: string;
   role: 'USER' | 'ADMIN';
   name: string;
+  imageUrl?: string;
 };
 
 export const CurrentUser = createParamDecorator(

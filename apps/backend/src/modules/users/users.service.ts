@@ -15,6 +15,7 @@ export class UsersService {
         email: true,
         role: true,
         bio: true,
+        imageUrl: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -35,6 +36,7 @@ export class UsersService {
       data: {
         name: dto.name,
         bio: dto.bio,
+        imageUrl: dto.imageUrl,
       },
       select: {
         id: true,
@@ -42,11 +44,30 @@ export class UsersService {
         email: true,
         role: true,
         bio: true,
+        imageUrl: true,
         createdAt: true,
         updatedAt: true,
       },
     });
 
+    return updated;
+  }
+
+  async uploadAvatar(userId: string, imageUrl: string) {
+    const updated = await this.prisma.user.update({
+      where: { id: userId },
+      data: { imageUrl },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        bio: true,
+        imageUrl: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
     return updated;
   }
 }
