@@ -9,7 +9,7 @@ import { ArrowLeft, Calendar, User, Pencil, Clock } from "lucide-react";
 import api from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
@@ -24,6 +24,7 @@ interface PostDetail {
   user: {
     id: string;
     name: string;
+    imageUrl?: string;
   };
 }
 
@@ -129,6 +130,7 @@ export default function PostDetailPage() {
         <div className="flex items-center justify-between py-4 border-y">
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10 border">
+              <AvatarImage src={post?.user.imageUrl} className="object-cover" />
               <AvatarFallback className="bg-primary/10 text-primary font-medium">
                 {getInitials(post.user.name)}
               </AvatarFallback>

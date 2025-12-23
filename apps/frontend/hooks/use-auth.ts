@@ -10,6 +10,7 @@ export interface User {
   email: string;
   role: "USER" | "ADMIN";
   bio: string | null;
+  imageUrl: string;
   createdAt: string;
   updatedAt: string;
 }

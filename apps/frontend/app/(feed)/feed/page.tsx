@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
 // Public Post shape
@@ -30,6 +30,7 @@ interface PublicPost {
   user: {
     id: string;
     name: string;
+    imageUrl?: string;
   };
 }
 
@@ -122,8 +123,9 @@ export default function FeedPage() {
                     {/* Author Info */}
                     <div className="flex items-center gap-2 mb-3">
                       <Avatar className="h-8 w-8 border">
-                        <AvatarFallback className="text-xs bg-primary/5 text-primary">
-                          {getInitials(post.user.name)}
+                        <AvatarImage src={post?.user.imageUrl} className="object-cover" />
+                        <AvatarFallback className="text-xs font-bold bg-primary/10 text-primary">
+                          {getInitials(post?.user.name || "U")}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col text-xs">

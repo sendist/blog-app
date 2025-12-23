@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader2, User, Shield, Pencil, Mail, BookOpen } from "lucide-react";
+import { Camera, Loader2, User, Shield, Pencil, Mail, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -37,7 +37,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // Validation Schema
 const profileSchema = z.object({
@@ -51,6 +51,7 @@ export default function DashboardPage() {
   const { user } = useAuth(); 
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Setup Form
   const form = useForm<ProfileFormValues>({
@@ -102,6 +103,34 @@ export default function DashboardPage() {
       .substring(0, 2);
   };
 
+  // 1. Avatar Upload Mutation
+  const uploadAvatarMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      // Important: Don't set Content-Type header manually, axios/fetch handles it for FormData
+      const res = await api.post("/avatar", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      toast("Avatar updated", { description: "Looking good!" });
+      queryClient.invalidateQueries({ queryKey: ["auth-user"] });
+    },
+    onError: () => {
+      toast("Error", { description: "Failed to upload image. Max 2MB." });
+    },
+  });
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      uploadAvatarMutation.mutate(file);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -121,11 +150,42 @@ export default function DashboardPage() {
             
             {/* User Info Header */}
             <div className="flex flex-col items-center text-center space-y-3">
-              <Avatar className="h-24 w-24">
-                <AvatarFallback className="text-2xl font-bold bg-primary/10 text-primary">
-                  {getInitials(user?.name || "U")}
-                </AvatarFallback>
-              </Avatar>
+              
+              {/* Interactive Avatar Container */}
+              <div className="relative group">
+                <Avatar className="h-24 w-24 cursor-pointer ring-2 ring-transparent group-hover:ring-primary/20 transition-all">
+                  <AvatarImage src={user?.imageUrl} className="object-cover" />
+                  <AvatarFallback className="text-2xl font-bold bg-primary/10 text-primary">
+                    {getInitials(user?.name || "U")}
+                  </AvatarFallback>
+                </Avatar>
+
+                {/* Loading Spinner Overlay */}
+                {uploadAvatarMutation.isPending && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-background/80 rounded-full">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                  </div>
+                )}
+
+                {/* Camera Icon Overlay (Visible on Hover) */}
+                {!uploadAvatarMutation.isPending && (
+                  <div 
+                    className="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 rounded-full transition-opacity cursor-pointer"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Camera className="h-6 w-6" />
+                  </div>
+                )}
+
+                {/* Hidden File Input */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  accept="image/png, image/jpeg, image/jpg"
+                  onChange={handleFileChange}
+                />
+              </div>
               
               <div className="space-y-1">
                 <h3 className="font-semibold text-xl">{user?.name}</h3>
