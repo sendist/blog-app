@@ -232,7 +232,7 @@ export default function DashboardPage() {
               <CardContent>
                 <div className="text-2xl font-bold">{user?.role}</div>
                 <p className="text-xs text-muted-foreground">
-                  System permissions granted
+                  { user?.role === "ADMIN" ? "Administrator with full permissions" : "User with standard access" }
                 </p>
               </CardContent>
             </Card>
