@@ -3,6 +3,7 @@ import { PrismaService } from '../../../prisma/prisma.service';
 import { PostStatus } from '@prisma/client';
 import { AdminListPostsQuery } from './dto/admin-list-posts.query';
 import { UpdatePostStatusDto } from './dto/update-post-status.dto';
+import { UpdateUserRoleDto } from './dto/update-user-role.dto';
 
 @Injectable()
 export class AdminService {
@@ -78,6 +79,30 @@ export class AdminService {
         status: true,
         updatedAt: true,
         user: { select: { id: true, name: true, email: true } },
+      },
+    });
+  }
+
+  async updateUserRole(adminId: string, targetUserId: string, dto: UpdateUserRoleDto) {
+    if (adminId === targetUserId) {
+      throw new BadRequestException('You cannot change your own role');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: targetUserId },
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+    
+    return this.prisma.user.update({
+      where: { id: targetUserId },
+      data: { role: dto.role },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        updatedAt: true,
       },
     });
   }

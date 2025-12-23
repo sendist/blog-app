@@ -6,6 +6,7 @@ import { AdminService } from './admin.service';
 import { AdminListPostsQuery } from './dto/admin-list-posts.query';
 import { UpdatePostStatusDto } from './dto/update-post-status.dto';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { UpdateUserRoleDto } from './dto/update-user-role.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('ADMIN')
@@ -16,6 +17,15 @@ export class AdminController {
   @Get('users')
   listUsers() {
     return this.admin.listUsers();
+  }
+
+  @Patch('users/:id/role')
+  async updateUserRole(
+    @CurrentUser() admin: any, 
+    @Param('id') id: string, 
+    @Body() dto: UpdateUserRoleDto
+  ) {
+    return this.admin.updateUserRole(admin.id, id, dto);
   }
 
   @Delete('users/:id')
