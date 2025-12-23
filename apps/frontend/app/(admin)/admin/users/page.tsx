@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { Loader2, MoreVertical, Shield, Trash2, Mail } from "lucide-react";
+import { Loader2, MoreVertical, Shield, Trash2, Mail, UserCog, ShieldAlert } from "lucide-react";
 
 import api from "@/lib/api";
 import {
@@ -17,6 +17,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -44,6 +51,25 @@ export default function AdminUsersPage() {
       return res.data;
     },
   });
+
+  // Mutation to Change Role
+  const roleMutation = useMutation({
+    mutationFn: async ({ id, role }: { id: string; role: "USER" | "ADMIN" }) => {
+      return api.patch(`/admin/users/${id}/role`, { role });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+      toast.success("User role updated successfully");
+    },
+    onError: () => {
+      toast.error("Failed to update user role");
+    },
+  });
+
+  const handleRoleChange = (id: string, newRole: string) => {
+    // Cast string back to specific type
+    roleMutation.mutate({ id, role: newRole as "USER" | "ADMIN" });
+  };
 
   // Delete User Mutation
   const deleteMutation = useMutation({
@@ -127,6 +153,33 @@ export default function AdminUsersPage() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>User Actions</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      
+                      {/* Role Sub-Menu */}
+                      <DropdownMenuSub>
+                        <DropdownMenuSubTrigger>
+                          <UserCog className="mr-2 h-4 w-4" /> Change Role
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuSubContent>
+                          <DropdownMenuRadioGroup 
+                            value={user.role} 
+                            onValueChange={(val) => handleRoleChange(user.id, val)}
+                          >
+                            <DropdownMenuRadioItem value="USER">
+                              <Shield className="mr-2 h-4 w-4 text-muted-foreground" /> 
+                              User
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem value="ADMIN">
+                              <ShieldAlert className="mr-2 h-4 w-4 text-primary" /> 
+                              Admin
+                            </DropdownMenuRadioItem>
+                          </DropdownMenuRadioGroup>
+                        </DropdownMenuSubContent>
+                      </DropdownMenuSub>
+
+                      <DropdownMenuSeparator />
+                      
                       <DropdownMenuItem 
                         onClick={() => handleDelete(user.id)}
                         className="text-red-600 focus:text-red-600 cursor-pointer"
